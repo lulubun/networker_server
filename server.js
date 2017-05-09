@@ -415,7 +415,7 @@ const jsonParser = require('body-parser').json();
 //   });
 // });
 
-app.use('/users', userRouter);
+app.use('./index', userRouter);
 
 
 module.exports = {runServer, app, closeServer};
