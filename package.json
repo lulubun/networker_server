@@ -1,0 +1,43 @@
+{
+  "name": "networker2",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "react-scripts": "0.9.5"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.17.1",
+    "express": "^4.15.2",
+    "formsy": "^0.19.2",
+    "formsy-material-ui": "^0.6.0",
+    "formsy-react": "^0.19.2",
+    "immutability-helper": "^2.1.2",
+    "material-ui": "^0.17.1",
+    "moment": "^2.18.1",
+    "mongoose": "^4.9.3",
+    "morgan": "^1.8.1",
+    "passport": "^0.3.2",
+    "passport-http": "^0.3.0",
+    "passport-local": "^1.0.0",
+    "react": "^15.4.2",
+    "react-add-to-calendar": "^0.0.9",
+    "react-dom": "^15.4.2",
+    "react-google-login": "^2.8.9",
+    "react-redux": "^5.0.3",
+    "react-router": "3.0.2",
+    "react-router-redux": "^4.0.8",
+    "react-tap-event-plugin": "^2.0.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0",
+    "save": "^2.3.0",
+    "thunk": "^0.0.1",
+    "whatwg-fetch": "^2.0.3"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}
