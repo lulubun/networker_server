@@ -319,7 +319,6 @@ if (require.main === module) {
   runServer().catch(err => console.error(err));
 };
 
-const jsonParser = require('body-parser').json();
 
 // const basicStrategy = new BasicStrategy(function(username, password, callback) {
 //   let user;
