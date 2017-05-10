@@ -6,7 +6,8 @@ const mongoose = require('mongoose');
 const morgan = require('morgan');
 const {PORT, DATABASE_URL} = require('./config');
 const {ContactModel} = require('./models');
-const {User, router: userRouter} = require('./index');
+const {User} = require('./userModels');
+const {router: userRouter} = require('./router');
 
 const app = express();
 
@@ -415,7 +416,7 @@ const jsonParser = require('body-parser').json();
 //   });
 // });
 
-app.use('./index', userRouter);
+app.use('./router', userRouter);
 
 
 module.exports = {runServer, app, closeServer};
