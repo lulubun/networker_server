@@ -10,6 +10,7 @@ const {User} = require('./userModels');
 //const {router: userRouter} = require('./router');
 const jsonParser = require('body-parser').json();
 const LocalStrategy = require('passport-local');
+const cors = require('cors');
 
 
 
@@ -18,6 +19,8 @@ const app = express();
 mongoose.Promise = global.Promise;
 
 app.use(express.static('public'));
+
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
