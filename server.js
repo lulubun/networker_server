@@ -20,8 +20,12 @@ mongoose.Promise = global.Promise;
 
 app.use(express.static('public'));
 
-//app.use(cors());
-app.options('*', cors())
+let corsOptions = {
+  "preflightContinue": true
+}
+
+app.options('*', cors(corsOptions))
+app.use(cors(corsOptions));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
