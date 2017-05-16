@@ -302,7 +302,7 @@ app.post('/:user/newPast/:id', (req, res) => {
 });
 
 // this function connects to our database, then starts the server
-function runServer(databaseUrl='mongodb://localhost/networker2', port=PORT) {
+function runServer(databaseUrl=DATABASE_URL, port=PORT) {
   return new Promise((resolve, reject) => {
     mongoose.connect(databaseUrl, err => {
       if (err) {
