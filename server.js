@@ -210,7 +210,7 @@ app.delete('/:user/one_contact/:id', (req, res) => {
 
 //delete a past instance
 app.put('/:user/one_contact/:id/:pastId', (req, res) => {
-  console.log(req.params);
+  console.log('User:', req.params);
   ContactModel
   .update(
     { _id: req.params.id },
@@ -264,11 +264,26 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 
 //edit a data point on one contact
 app.put('/:user/one_contact/:_id', (req, res) => {
-  ContactModel
-  .findByIdAndUpdate(req.params._id, req.body)
-  .exec()
-  .then(update => {res.status(201).json(update)})
-  .catch(err => res.status(500).json({message: 'Contact not updated'}));
+  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact }}, {}, (err) => {
+    if(err) {
+      res.send(err);
+    }
+
+    ContactModel.findById(req.params._id, function (err, contact) {
+      if (err) {
+        res.send(err);
+      }
+
+      console.log(contact);
+      res.json(contact)
+    });
+  })
+
+  // ContactModel
+  // .findByIdAndUpdate(req.params._id, { serNextContact: req.body.serNextContact })
+  // .exec()
+  // .then(update => {console.log(update)})
+  // .catch(err => res.status(500).json({message: 'Contact not updated'}));
 });
 
 //add a new past instance
@@ -287,7 +302,7 @@ app.post('/:user/newPast/:id', (req, res) => {
 });
 
 // this function connects to our database, then starts the server
-function runServer(databaseUrl=DATABASE_URL, port=PORT) {
+function runServer(databaseUrl='mongodb://localhost/networker2', port=PORT) {
   return new Promise((resolve, reject) => {
     mongoose.connect(databaseUrl, err => {
       if (err) {
