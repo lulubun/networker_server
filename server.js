@@ -255,7 +255,9 @@ app.put('/:user/edit_contact/:id', (req, res) => {
   });
 
   ContactModel
-    .findByIdAndUpdate(req.params.id, {$set: updated}, {new:true})
+    .findByIdAndUpdate(req.params.id, {$set: updated},
+    //  {new:true}
+    )
     .exec()
     .then(updatedContact => {res.status(201).json(updatedContact)})
     .catch(err => res.status(500).json({message: 'Contact not updated'}));
@@ -289,7 +291,7 @@ app.post('/:user/newPast/:id', (req, res) => {
   ContactModel.findByIdAndUpdate(
         req.params.id,
         {$push: {"serPast": req.body}},
-        {new : true},
+        //{new : true},
         function(err, updatedPast) {
           if(err) {
             console.log(err);
