@@ -210,7 +210,7 @@ app.delete('/:user/one_contact/:id', (req, res) => {
 
 //delete a past instance
 app.put('/:user/one_contact/:id/:pastId', (req, res) => {
-  console.log('User:', req.params);
+  console.log(req.params);
   ContactModel
   .update(
     { _id: req.params.id },
@@ -219,7 +219,7 @@ app.put('/:user/one_contact/:id/:pastId', (req, res) => {
         console.log(err);
       }
       res.json(updatedObj)
-      console.log(res);
+
     }
   );
 
@@ -262,46 +262,15 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 });
 
 
-//edit a data point on one contact
-app.put('/:user/one_contact/:_id/dateUpdate', (req, res) => {
-  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact }}, {new: true}, (err) => {
-    if(err) {
-      res.send(err);
-    }
-
-    ContactModel.findById(req.params._id, function (err, contact) {
-      if (err) {
-        res.send(err);
-      }
-
-      console.log(contact);
-      res.json(contact)
-    });
-  })
-
-  // ContactModel
-  // .findByIdAndUpdate(req.params._id, { serNextContact: req.body.serNextContact })
-  // .exec()
-  // .then(update => {console.log(update)})
-  // .catch(err => res.status(500).json({message: 'Contact not updated'}));
+//edit heart or date on one contact
+app.put('/:user/one_contact/:_id', (req, res) => {
+  ContactModel
+  .findByIdAndUpdate(req.params._id, req.body)
+  .exec()
+  .then(update => {res.status(201).json(update)})
+  .catch(err => res.status(500).json({message: 'Contact not updated'}));
 });
 
-app.put('/:user/one_contact/:_id/heartUpdate', (req, res) => {
-  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serImportant: req.body.serImportant }}, {new: true}, (err) => {
-    if(err) {
-      res.send(err);
-    }
-
-    ContactModel.findById(req.params._id, function (err, contact) {
-      if (err) {
-        res.send(err);
-      }
-
-      console.log(contact);
-      res.json(contact)
-    });
-  })
-});
 
 //add a new past instance
 app.post('/:user/newPast/:id', (req, res) => {
