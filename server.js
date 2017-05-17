@@ -214,12 +214,12 @@ app.put('/:user/one_contact/:id/:pastId', (req, res) => {
   ContactModel
   .update(
     { _id: req.params.id },
-    { $pull: { 'serPast': { 'pastId':  parseInt(req.params.pastId) } } }, {new: true} (err, updatedObj) => {
+    { $pull: { 'serPast': { 'pastId':  parseInt(req.params.pastId) } } }, (err, updatedObj) => {
       if(err) {
         console.log(err);
       }
       res.json(updatedObj)
-
+      console.log(res);
     }
   );
 
