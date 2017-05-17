@@ -264,12 +264,24 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 
 //edit heart or date on one contact
 app.put('/:user/one_contact/:_id', (req, res) => {
-  ContactModel
-  .findByIdAndUpdate(req.params._id, req.body)
-  .exec()
-  .then(update => {res.status(201).json(update)})
-  .catch(err => res.status(500).json({message: 'Contact not updated'}));
-});
+  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact }}, {}, (err) => {
+    if(err) {
+      res.send(err);
+    }
+  ContactModel.findById(req.params._id, function (err, contact) {
+    if (err) {
+      res.send(err);
+    }
+    console.log(contact);
+    res.json(contact)
+  });
+})
+//   ContactModel
+//   .findByIdAndUpdate(req.params._id, req.body)
+//   .exec()
+//   .then(update => {res.status(201).json(update)})
+//   .catch(err => res.status(500).json({message: 'Contact not updated'}));
+// });
 
 
 //add a new past instance
