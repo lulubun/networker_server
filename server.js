@@ -7,12 +7,9 @@ const morgan = require('morgan');
 const {PORT, DATABASE_URL} = require('./config');
 const {ContactModel} = require('./models');
 const {User} = require('./userModels');
-//const {router: userRouter} = require('./router');
 const jsonParser = require('body-parser').json();
 const LocalStrategy = require('passport-local');
 const cors = require('cors');
-
-
 
 const app = express();
 
@@ -34,15 +31,15 @@ app.use(bodyParser.json());
 //return all contacts for a user
 app.get('/:user/contacts', (req, res) => {
   ContactModel
-    .find({serUser: req.params.user})
-    .exec()
-    .then(data => {
-      res.json(data)
-    })
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({error: 'cannot retrieve contacts'});
-    });
+  .find({serUser: req.params.user})
+  .exec()
+  .then(data => {
+    res.json(data)
+  })
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({error: 'cannot retrieve contacts'});
+  });
 });
 
 
@@ -71,92 +68,6 @@ app.get('/:user/one_contact/:id/:pastId', (req, res) => {
   })
 });
 
-// app.get('/:user', (username, password, callback) => {
-//   let user;
-//   User
-//   .findOne({username: username})
-//   .exec()
-//   .then(_user => {
-//     user = _user;
-//     if (!user) {
-//       return callback(null, false, {message: 'Incorrect username'});
-//     }
-//     return user.validatePassword(password);
-//   })
-//   .then(isValid => {
-//     if (!isValid) {
-//       return callback(null, false, {message: 'Incorrect password'});
-//     }
-//     else {
-//       return callback(null, user)
-//     }
-//   });
-// });
-
-// app.post('/', (req, res) => {
-//   if (!req.body) {
-//     return res.status(400).json({message: 'No request body'});
-//   }
-//
-//   if (!('username' in req.body)) {
-//     return res.status(422).json({message: 'Missing field: username'});
-//   }
-//
-//   let {username, password, firstName, lastName} = req.body;
-//
-//   if (typeof username !== 'string') {
-//     return res.status(422).json({message: 'Incorrect field type: username'});
-//   }
-//
-//   username = username.trim();
-//
-//   if (username === '') {
-//     return res.status(422).json({message: 'Incorrect field length: username'});
-//   }
-//
-//   if (!(password)) {
-//     return res.status(422).json({message: 'Missing field: password'});
-//   }
-//
-//   if (typeof password !== 'string') {
-//     return res.status(422).json({message: 'Incorrect field type: password'});
-//   }
-//
-//   password = password.trim();
-//
-//   if (password === '') {
-//     return res.status(422).json({message: 'Incorrect field length: password'});
-//   }
-//
-//   // check for existing user
-//   return User
-//     .find({username})
-//     .count()
-//     .exec()
-//     .then(count => {
-//       if (count > 0) {
-//         return res.status(422).json({message: 'username already taken'});
-//       }
-//       // if no existing user, hash password
-//       return User
-//     })
-//     .then(hash => {
-//       return User
-//         .create({
-//           username: username,
-//           password: password,
-//           firstName: firstName,
-//           lastName: lastName
-//         })
-//     })
-//     .then(user => {
-//       return res.status(201).json(user.apiRepr());
-//     })
-//     .catch(err => {
-//       res.status(500).json({message: 'Internal server error'})
-//     });
-// });
-
 //create a new contact
 app.post('/:user/new_contact', (req, res) => {
   let serFirst = req.body.serFirst ? req.body.serFirst : '';
@@ -171,25 +82,25 @@ app.post('/:user/new_contact', (req, res) => {
   let serPast = req.body.serPast ? req.body.serPast: [];
 
   ContactModel
-    .create({
-      serUser: req.body.serUser,
-      serNextContact: req.body.serNextContact,
-      serFirst: serFirst,
-      serLast: serLast,
-      serImportant: serImportant,
-      serCompany: serCompany,
-      serJobTitle: serJobTitle,
-      serPhone: serPhone,
-      serEmail: serEmail,
-      serMeetDate: serMeetDate,
-      serNote: serNote,
-      serPast: req.body.serPast
-    })
-    .then((data) => {res.status(201).json(data)})
-    .catch(err => {
-      console.error(err);
-      res.status(500).json({error: 'Could not save contact'})
-    });
+  .create({
+    serUser: req.body.serUser,
+    serNextContact: req.body.serNextContact,
+    serFirst: serFirst,
+    serLast: serLast,
+    serImportant: serImportant,
+    serCompany: serCompany,
+    serJobTitle: serJobTitle,
+    serPhone: serPhone,
+    serEmail: serEmail,
+    serMeetDate: serMeetDate,
+    serNote: serNote,
+    serPast: req.body.serPast
+  })
+  .then((data) => {res.status(201).json(data)})
+  .catch(err => {
+    console.error(err);
+    res.status(500).json({error: 'Could not save contact'})
+  });
 });
 
 
@@ -222,20 +133,6 @@ app.put('/:user/one_contact/:id/:pastId', (req, res) => {
 
     }
   );
-
-  // console.log(req.params);
-  // ContactModel
-  // .update(
-  //   req.params.id,
-  //   {$pull: {"serPast": [{"pastId": req.params.pastId}]}},
-  //   function(err, updatedPast) {
-  //     console.log(updatedPast);
-  //     if(err) {
-  //       console.log(err);
-  //     }
-  //     res.json(updatedPast)
-  //   }
-  // );
 });
 
 
@@ -252,15 +149,14 @@ app.put('/:user/edit_contact/:id', (req, res) => {
     if (field in req.body) {
       updated[field] = req.body[field];
     }
-  });
+  })
 
   ContactModel
-    .findByIdAndUpdate(req.params.id, {$set: updated},
-    //  {new:true}
-    )
-    .exec()
-    .then(updatedContact => {res.status(201).json(updatedContact)})
-    .catch(err => res.status(500).json({message: 'Contact not updated'}));
+  .findByIdAndUpdate(req.params.id, {$set: updated})
+  // , {new:true})
+  .exec()
+  .then(updatedContact => {res.status(201).json(updatedContact)})
+  .catch(err => res.status(500).json({message: 'Contact not updated'}));
 });
 
 
@@ -270,6 +166,7 @@ app.put('/:user/one_contact/:_id', (req, res) => {
     if(err) {
       res.send(err);
     }
+  })  
   ContactModel.findById(req.params._id, function (err, contact) {
     if (err) {
       res.send(err);
@@ -277,28 +174,22 @@ app.put('/:user/one_contact/:_id', (req, res) => {
     console.log(contact);
     res.json(contact)
   });
-})
-//   ContactModel
-//   .findByIdAndUpdate(req.params._id, req.body)
-//   .exec()
-//   .then(update => {res.status(201).json(update)})
-//   .catch(err => res.status(500).json({message: 'Contact not updated'}));
-// });
+});
 
 
 //add a new past instance
 app.post('/:user/newPast/:id', (req, res) => {
   ContactModel.findByIdAndUpdate(
-        req.params.id,
-        {$push: {"serPast": req.body}},
-        //{new : true},
-        function(err, updatedPast) {
-          if(err) {
-            console.log(err);
-          }
-          res.json(updatedPast)
-        }
-    );
+    req.params.id,
+    {$push: {"serPast": req.body}},
+    //{new : true},
+    function(err, updatedPast) {
+      if(err) {
+        console.log(err);
+      }
+      res.json(updatedPast)
+    }
+  );
 });
 
 // this function connects to our database, then starts the server
@@ -342,105 +233,6 @@ if (require.main === module) {
   runServer().catch(err => console.error(err));
 };
 
-
-// const basicStrategy = new BasicStrategy(function(username, password, callback) {
-//   let user;
-//   User
-//     .findOne({username: username})
-//     .exec()
-//     .then(_user => {
-//       user = _user;
-//       if (!user) {
-//         return callback(null, false, {message: 'Incorrect username'});
-//       }
-//       return user.validatePassword(password);
-//     })
-//     .then(isValid => {
-//       if (!isValid) {
-//         return callback(null, false, {message: 'Incorrect password'});
-//       }
-//       else {
-//         return callback(null, user)
-//       }
-//     });
-// });
-//
-// passport.use(basicStrategy);
-// router.use(passport.initialize());
-//
-// router.get('/login',
-//   passport.authenticate('basic', {session: false}),
-//   (req, res) => res.json(user.apiRepr())
-// );
-//
-// app.use(router)
-
-// app.post('/login',
-//   passport.authenticate('basicStrategy'),
-//   function(req, res) {
-//   res.redirect(req.user.username + '/contacts');
-// });
-
-// app.post('/new_user', (req, res) => {
-//   if (!req.body) {
-//     return res.status(400).json({message: 'No request body'});
-//   }
-//
-//   if (!('username' in req.body)) {
-//     return res.status(422).json({message: 'Missing field: username'});
-//   }
-//
-//   let {username, password, firstName, lastName} = req.body;
-//
-//   if (typeof username !== 'string') {
-//     return res.status(422).json({message: 'Incorrect field type: username'});
-//   }
-//
-//   username = username.trim();
-//
-//   if (username === '') {
-//     return res.status(422).json({message: 'Incorrect field length: username'});
-//   }
-//
-//   if (!(password)) {
-//     return res.status(422).json({message: 'Missing field: password'});
-//   }
-//
-//   if (typeof password !== 'string') {
-//     return res.status(422).json({message: 'Incorrect field type: password'});
-//   }
-//
-//   password = password.trim();
-//
-//   if (password === '') {
-//     return res.status(422).json({message: 'Incorrect field length: password'});
-//   }
-//
-//   // check for existing user
-//   return User
-//   .find({username})
-//   .count()
-//   .exec()
-//   .then(count => {
-//     if (count > 0) {
-//       return res.status(422).json({message: 'username already taken'});
-//     }
-//     // if no existing user, hash password
-//     return User
-//     .create({
-//       username: username,
-//       password: password,
-//       firstName: firstName,
-//       lastName: lastName
-//     })
-//   })
-//   .then(user => {
-//     return res.status(201).json(user.apiRepr());
-//   })
-//   .catch(err => {
-//     res.status(500).json({message: 'Internal server error'})
-//   });
-// });
 const router = express.Router();
 
 router.use(jsonParser);
@@ -450,24 +242,24 @@ router.use(jsonParser);
 const localStrategy = new LocalStrategy((username, password, callback) => {
   let user;
   User
-    .findOne({username: username})
-    .exec()
-    .then(_user => {
-      console.log(_user);
-      user = _user;
-      if (!user) {
-        return callback(null, false, {message: 'Incorrect username'});
-      }
-      return user.validatePassword(password);
-    })
-    .then(isValid => {
-      if (!isValid) {
-        return callback(null, false, {message: 'Incorrect password'});
-      }
-      else {
-        return callback(null, user)
-      }
-    });
+  .findOne({username: username})
+  .exec()
+  .then(_user => {
+    console.log(_user);
+    user = _user;
+    if (!user) {
+      return callback(null, false, {message: 'Incorrect username'});
+    }
+    return user.validatePassword(password);
+  })
+  .then(isValid => {
+    if (!isValid) {
+      return callback(null, false, {message: 'Incorrect password'});
+    }
+    else {
+      return callback(null, user)
+    }
+  });
 });
 
 passport.use(localStrategy);
@@ -505,32 +297,31 @@ router.post('/create', (req, res) => {
 
   // check for existing user
   User
-    .find({username})
-    .count()
-    .exec()
-    .then(count => {
-      if (count > 0) {
-        return res.status(422).json({message: 'username already taken'});
-      }
-      return User.hashPassword(password)
+  .find({username})
+  .count()
+  .exec()
+  .then(count => {
+    if (count > 0) {
+      return res.status(422).json({message: 'username already taken'});
+    }
+    return User.hashPassword(password)
+  })
+  .then(hash => {
+    return User
+    .create({
+      username: username,
+      password: hash,
+      firstName: firstName,
+      lastName: lastName
     })
-    .then(hash => {
-      return User
-        .create({
-          username: username,
-          password: hash,
-          firstName: firstName,
-          lastName: lastName
-        })
-    })
-    .then(user => {
-      return res.status(201).json(user.apiRepr());
-    })
-    .catch(err => {
-      res.status(500).json({message: 'Internal server error'})
-    });
+  })
+  .then(user => {
+    return res.status(201).json(user.apiRepr());
+  })
+  .catch(err => {
+    res.status(500).json({message: 'Internal server error'})
+  });
 });
-
 
 //validate a user
 router.post('/me',
@@ -544,7 +335,5 @@ router.get('/logout', function(req, res){
 });
 
 app.use(router);
-  //'./router', userRouter);
-
 
 module.exports = {runServer, app, closeServer};
