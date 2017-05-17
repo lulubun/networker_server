@@ -264,7 +264,7 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 
 //edit a data point on one contact
 app.put('/:user/one_contact/:_id/dateUpdate', (req, res) => {
-  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact }}, {}, (err) => {
+  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact }}, {new: true}, (err) => {
     if(err) {
       res.send(err);
     }
@@ -287,7 +287,7 @@ app.put('/:user/one_contact/:_id/dateUpdate', (req, res) => {
 });
 
 app.put('/:user/one_contact/:_id/heartUpdate', (req, res) => {
-  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serImportant: req.body.serImportant }}, {}, (err) => {
+  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serImportant: req.body.serImportant }}, {new: true}, (err) => {
     if(err) {
       res.send(err);
     }
