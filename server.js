@@ -162,11 +162,12 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 
 //edit heart or date on one contact
 app.put('/:user/one_contact/:_id', (req, res) => {
-  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact }}, {}, (err) => {
+  console.log('hi');
+  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact, serImportant: req.body.serImportant }}, {}, (err) => {
     if(err) {
       res.send(err);
     }
-  })  
+  })
   ContactModel.findById(req.params._id, function (err, contact) {
     if (err) {
       res.send(err);
