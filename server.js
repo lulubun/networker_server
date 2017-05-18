@@ -152,8 +152,7 @@ app.put('/:user/edit_contact/:id', (req, res) => {
   })
 
   ContactModel
-  .findByIdAndUpdate(req.params.id, {$set: updated})
-  // , {new:true})
+  .findByIdAndUpdate(req.params.id, {$set: updated}, {new:true})
   .exec()
   .then(updatedContact => {res.status(201).json(updatedContact)})
   .catch(err => res.status(500).json({message: 'Contact not updated'}));
@@ -162,7 +161,6 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 
 //edit heart or date on one contact
 app.put('/:user/one_contact/:_id', (req, res) => {
-  console.log('hi');
   ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact, serImportant: req.body.serImportant }}, {}, (err) => {
     if(err) {
       res.send(err);
@@ -183,12 +181,13 @@ app.post('/:user/newPast/:id', (req, res) => {
   ContactModel.findByIdAndUpdate(
     req.params.id,
     {$push: {"serPast": req.body}},
-    //{new : true},
+    {new : true},
     function(err, updatedPast) {
       if(err) {
         console.log(err);
       }
-      res.json(updatedPast)
+      res.json(updatedPast);
+      console.log('new past response', updatedPast);
     }
   );
 });
