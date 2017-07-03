@@ -17,4 +17,23 @@ const contactSchema = mongoose.Schema({
 
 const ContactModel = mongoose.model('ContactModel', contactSchema);
 
-module.exports = {ContactModel};
+const jobSchema = mongoose.Schema({
+  serUser: String,
+  serCompany: {type: String, reuired: true},
+  serJobTitle: String,
+  serFoundJob: String,
+  serNextDate: String,
+  serImportant: Boolean,
+  serStage: String,
+  serContactName: String,
+  serResearch: String,
+  serJobNotes: String,
+  serWebsite: String,
+  serPost: String,
+  serPastJobs: Array
+});
+
+const JobModel = mongoose.model('JobModel', jobSchema);
+
+
+module.exports = {ContactModel, JobModel};
