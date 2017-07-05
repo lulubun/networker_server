@@ -5,7 +5,7 @@ const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const {PORT, DATABASE_URL} = require('./config');
-const {ContactModel} = require('./models');
+const {ContactModel, JobModel} = require('./models');
 const {User} = require('./userModels');
 const jsonParser = require('body-parser').json();
 const LocalStrategy = require('passport-local');
@@ -121,7 +121,6 @@ app.delete('/:user/one_contact/:id', (req, res) => {
 
 //delete a past instance
 app.put('/:user/one_contact/:id/:pastId', (req, res) => {
-  console.log(req.params);
   ContactModel
   .update(
     { _id: req.params.id },
@@ -138,7 +137,6 @@ app.put('/:user/one_contact/:id/:pastId', (req, res) => {
 
 //edit a contact
 app.put('/:user/edit_contact/:id', (req, res) => {
-  console.log(req.params.id, req.body._id);
   if(!(req.params.id && req.body._id && req.params.id === req.body._id)) {
     res.status(400).json({
       error: 'Request path id and request body id values must match'
@@ -162,18 +160,18 @@ app.put('/:user/edit_contact/:id', (req, res) => {
 
 //edit heart or date on one contact
 app.put('/:user/one_contact/:_id', (req, res) => {
-  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact, serImportant: req.body.serImportant }}, {}, (err) => {
+  ContactModel.findByIdAndUpdate(req.params._id, { $set: { serNextContact: req.body.serNextContact, serImportant: req.body.serImportant }}, { new: true }, function (err, contact) {
     if(err) {
       res.send(err);
     }
-  })
-  ContactModel.findById(req.params._id, function (err, contact) {
-    if (err) {
-      res.send(err);
-    }
-    console.log(contact);
     res.json(contact)
-  });
+  })
+//   ContactModel.findById(req.params._id, function (err, contact) {
+//     if (err) {
+//       res.send(err);
+//     }
+//     res.json(contact)
+//   });
 });
 
 
@@ -196,7 +194,7 @@ app.post('/:user/newPast/:id', (req, res) => {
 //return all Jobs for a user
 app.get('/:user/Jobs', (req, res) => {
   JobModel
-  .find({serUser: req.params.user.jobs})
+  .find({serUser: req.params.user})
   .exec()
   .then(data => {
     res.json(data)
@@ -235,31 +233,34 @@ app.get('/:user/one_Job/:id/:pastId', (req, res) => {
 
 //create a new Job
 app.post('/:user/new_Job', (req, res) => {
-  let serFirst = req.body.serFirst ? req.body.serFirst : '';
-  let serLast = req.body.serLast ? req.body.serLast: '';
-  let serImportant = req.body.serImportant ? req.body.serImportant: false;
-  let serCompany = req.body.serCompany ? req.body.serCompany: '';
-  let serJobTitle = req.body.serJobTitle ? req.body.serJobTitle: '';
-  let serPhone = req.body.serPhone ? req.body.serPhone: '';
-  let serEmail = req.body.serEmail ? req.body.serEmail: '';
-  let serMeetDate = req.body.serMeetDate ? req.body.serMeetDate: '';
-  let serNote = req.body.serNote ? req.body.serNote: '';
-  let serPast = req.body.serPast ? req.body.serPast: [];
+  let serCompany = req.body.serCompany ? req.body.serCompany : '';
+  let serJobTitle = req.body.serJobTitle ? req.body.serJobTitle : '';
+  let serFoundJob = req.body.serFoundJob ? req.body.serFoundJob: '';
+  let serNextDate = req.body.serNextDate ? req.body.serNextDate : '';
+  let serImportant = req.body.serImportant ? req.body.serImportant : false;
+  let serStage = req.body.serStage ? req.body.serStage : '';
+  let serContactName = req.body.serContactName ? req.body.serContactName : '';
+  let serResearch = req.body.serResearch ? req.body.serResearch : '';
+  let serJobNotes = req.body.serJobNotes ? req.body.serJobNotes  : '';
+  let serWebsite = req.body.serWebsite ? req.body.serWebsite : '';
+  let serPost = req.body.serPost ? req.body.serPost : '';
+  let serPastJobs = req.body.serPastJobs ? req.body.serPastJobs: [];
 
   JobModel
   .create({
     serUser: req.body.serUser,
-    serNextJob: req.body.serNextJob,
-    serFirst: serFirst,
-    serLast: serLast,
-    serImportant: serImportant,
     serCompany: serCompany,
     serJobTitle: serJobTitle,
-    serPhone: serPhone,
-    serEmail: serEmail,
-    serMeetDate: serMeetDate,
-    serNote: serNote,
-    serPast: req.body.serPast
+    serFoundJob: serFoundJob,
+    serNextDate: serNextDate,
+    serImportant: serImportant,
+    serStage: serStage,
+    serContactName: serContactName,
+    serResearch: serResearch,
+    serJobNotes: serJobNotes,
+    serWebsite: serWebsite,
+    serPost: serPost,
+    serPastJobs: serPastJobs
   })
   .then((data) => {res.status(201).json(data)})
   .catch(err => {
@@ -286,11 +287,10 @@ app.delete('/:user/one_Job/:id', (req, res) => {
 
 //delete a past instance
 app.put('/:user/one_Job/:id/:pastId', (req, res) => {
-  console.log(req.params);
   JobModel
   .update(
     { _id: req.params.id },
-    { $pull: { 'serPast': { 'pastId':  parseInt(req.params.pastId) } } }, (err, updatedObj) => {
+    { $pull: { 'serPastJobs': { 'pastId':  parseInt(req.params.pastId) } } }, (err, updatedObj) => {
       if(err) {
         console.log(err);
       }
@@ -303,14 +303,13 @@ app.put('/:user/one_Job/:id/:pastId', (req, res) => {
 
 //edit a Job
 app.put('/:user/edit_Job/:id', (req, res) => {
-  console.log(req.params.id, req.body._id);
   if(!(req.params.id && req.body._id && req.params.id === req.body._id)) {
     res.status(400).json({
       error: 'Request path id and request body id values must match'
     });
   }
   const updated = {};
-  const updatableFields = ['serFirst', 'serLast', 'serCompany', 'serJobTitle', 'serPhone', 'serEmail', 'serMeetDate', 'serNote'];
+  const updatableFields = [ 'serCompany', 'serJobTitle', 'serFoundJob', 'serNextDate', 'serStage', 'serContactName', 'serResearch', 'serJobNotes'];
   updatableFields.forEach(field => {
     if (field in req.body) {
       updated[field] = req.body[field];
@@ -327,26 +326,27 @@ app.put('/:user/edit_Job/:id', (req, res) => {
 
 //edit heart or date on one Job
 app.put('/:user/one_Job/:_id', (req, res) => {
-  JobModel.findByIdAndUpdate(req.params._id, { $set: { serNextJob: req.body.serNextJob, serImportant: req.body.serImportant }}, {}, (err) => {
+  JobModel.findByIdAndUpdate(req.params._id, { $set: { serNextDate: req.body.serNextDate, serImportant: req.body.serImportant }}, { new: true }, function (err, Job) {
     if(err) {
       res.send(err);
     }
-  })
-  JobModel.findById(req.params._id, function (err, Job) {
-    if (err) {
-      res.send(err);
-    }
-    console.log(Job);
     res.json(Job)
-  });
+  })
+  // JobModel.findById(req.params._id, function (err, Job) {
+  //   console.log(Job);
+  //   if (err) {
+  //     res.send(err);
+  //   }
+  //   res.json(Job)
+  // })
 });
 
 
 //add a new past instance
-app.post('/:user/newPast/:id', (req, res) => {
+app.post('/:user/newJobPast/:id', (req, res) => {
   JobModel.findByIdAndUpdate(
     req.params.id,
-    {$push: {"serPast": req.body}},
+    {$push: {"serPastJobs": req.body}},
     {new : true},
     function(err, updatedPast) {
       if(err) {
@@ -500,6 +500,10 @@ router.get('/logout', function(req, res){
   req.logout();
   res.redirect('/');
 });
+
+app.get('*', function (request, response){
+  response.sendFile(path.resolve('public', 'index.html'))
+})
 
 app.use(router);
 
