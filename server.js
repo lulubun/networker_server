@@ -309,7 +309,7 @@ app.put('/:user/edit_Job/:id', (req, res) => {
     });
   }
   const updated = {};
-  const updatableFields = [ 'serCompany', 'serJobTitle', 'serFoundJob', 'serNextDate', 'serStage', 'serContactName', 'serResearch', 'serJobNotes'];
+  const updatableFields = [ 'serCompany', 'serJobTitle', 'serFoundJob', 'serNextDate', 'serStage', 'serContactName', 'serResearch', 'serJobNotes', 'serWebsite', 'serPost'];
   updatableFields.forEach(field => {
     if (field in req.body) {
       updated[field] = req.body[field];
