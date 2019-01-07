@@ -15,8 +15,6 @@ const contactSchema = mongoose.Schema({
   serPast: Array
 });
 
-const ContactModel = mongoose.model('ContactModel', contactSchema);
-
 const jobSchema = mongoose.Schema({
   serUser: String,
   serCompany: {type: String, reuired: true},
@@ -25,7 +23,7 @@ const jobSchema = mongoose.Schema({
   serNextDate: String,
   serImportant: Boolean,
   serStage: String,
-  serContactName: String,
+  serContactName: Array,
   serResearch: String,
   serJobNotes: String,
   serWebsite: String,
@@ -34,6 +32,6 @@ const jobSchema = mongoose.Schema({
 });
 
 const JobModel = mongoose.model('JobModel', jobSchema);
-
+const ContactModel = mongoose.model('ContactModel', contactSchema);
 
 module.exports = {ContactModel, JobModel};

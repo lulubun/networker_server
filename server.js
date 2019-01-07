@@ -193,11 +193,13 @@ app.post('/:user/newPast/:id', (req, res) => {
 
 //return all Jobs for a user
 app.get('/:user/Jobs', (req, res) => {
+  console.log('req, res: ', req, res);
   JobModel
   .find({serUser: req.params.user})
   .exec()
   .then(data => {
-    res.json(data)
+    console.log('HELLO!!', data)
+    res.json({jobs: data})
   })
   .catch(err => {
     console.error(err);
@@ -233,34 +235,34 @@ app.get('/:user/one_Job/:id/:pastId', (req, res) => {
 
 //create a new Job
 app.post('/:user/new_Job', (req, res) => {
-  let serCompany = req.body.serCompany ? req.body.serCompany : '';
-  let serJobTitle = req.body.serJobTitle ? req.body.serJobTitle : '';
-  let serFoundJob = req.body.serFoundJob ? req.body.serFoundJob: '';
-  let serNextDate = req.body.serNextDate ? req.body.serNextDate : '';
-  let serImportant = req.body.serImportant ? req.body.serImportant : false;
-  let serStage = req.body.serStage ? req.body.serStage : '';
-  let serContactName = req.body.serContactName ? req.body.serContactName : '';
-  let serResearch = req.body.serResearch ? req.body.serResearch : '';
-  let serJobNotes = req.body.serJobNotes ? req.body.serJobNotes  : '';
-  let serWebsite = req.body.serWebsite ? req.body.serWebsite : '';
-  let serPost = req.body.serPost ? req.body.serPost : '';
-  let serPastJobs = req.body.serPastJobs ? req.body.serPastJobs: [];
+  let serCompany = req.body.serCompany || '';
+  let serJobTitle = req.body.serJobTitle || '';
+  let serFoundJob = req.body.serFoundJob || '';
+  let serNextDate = req.body.serNextDate || '';
+  let serImportant = req.body.serImportant || false;
+  let serStage = req.body.serStage || '';
+  let serContactName = req.body.serContactName || [];
+  let serResearch = req.body.serResearch || '';
+  let serJobNotes = req.body.serJobNotes || '';
+  let serWebsite = req.body.serWebsite || '';
+  let serPost = req.body.serPost || '';
+  let serPastJobs = req.body.serPastJobs || [];
 
   JobModel
   .create({
     serUser: req.body.serUser,
-    serCompany: serCompany,
-    serJobTitle: serJobTitle,
-    serFoundJob: serFoundJob,
-    serNextDate: serNextDate,
-    serImportant: serImportant,
-    serStage: serStage,
-    serContactName: serContactName,
-    serResearch: serResearch,
-    serJobNotes: serJobNotes,
-    serWebsite: serWebsite,
-    serPost: serPost,
-    serPastJobs: serPastJobs
+    serCompany,
+    serJobTitle,
+    serFoundJob,
+    serNextDate,
+    serImportant,
+    serStage,
+    serContactName,
+    serResearch,
+    serJobNotes,
+    serWebsite,
+    serPost,
+    serPastJobs
   })
   .then((data) => {res.status(201).json(data)})
   .catch(err => {
