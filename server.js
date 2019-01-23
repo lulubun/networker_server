@@ -198,7 +198,6 @@ app.get('/:user/Jobs', (req, res) => {
   .find({serUser: req.params.user})
   .exec()
   .then(data => {
-    console.log('HELLO!!', data)
     res.json({jobs: data})
   })
   .catch(err => {
@@ -317,7 +316,6 @@ app.put('/:user/edit_Job/:id', (req, res) => {
       updated[field] = req.body[field];
     }
   })
-
   JobModel
   .findByIdAndUpdate(req.params.id, {$set: updated}, {new:true})
   .exec()
@@ -327,20 +325,14 @@ app.put('/:user/edit_Job/:id', (req, res) => {
 
 
 //edit heart or date on one Job
-app.put('/:user/one_Job/:_id', (req, res) => {
-  JobModel.findByIdAndUpdate(req.params._id, { $set: { serNextDate: req.body.serNextDate, serImportant: req.body.serImportant }}, { new: true }, function (err, Job) {
-    if(err) {
-      res.send(err);
-    }
-    res.json(Job)
-  })
-  // JobModel.findById(req.params._id, function (err, Job) {
-  //   console.log(Job);
-  //   if (err) {
-  //     res.send(err);
-  //   }
-  //   res.json(Job)
-  // })
+app.put('/:user/one_Job/:_id', (req, res) => {  
+  JobModel.findByIdAndUpdate(req.params._id, { $set: { serNextDate: req.body.serNextDate, serImportant: req.body.serImportant }}, { new: true })
+  .exec()
+  .then(updatedJob => {res.status(201).json(updatedJob)})
+  .catch(err => {
+    console.log('err: ', err);
+    res.status(500).json({message: 'Job not updated'})
+  });
 });
 
 
